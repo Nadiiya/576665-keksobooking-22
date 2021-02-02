@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг»
 
 * Студент: [Nadiia Derevianchenko](https://up.htmlacademy.ru/javascript/22/user/576665).
-* Наставник: `Неизвестно`.
+* Наставник: [Сергей Шрамко](https://htmlacademy.ru/profile/id852139).
 
 ---
 
