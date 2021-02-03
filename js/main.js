@@ -9,3 +9,10 @@ const getRandomInteger = (min, max) => {
 }
 
 getRandomInteger (0, 7);
+
+
+const getRandomDecimal = (min, max, decimalPlaces = 5) => {
+  return checkCorrectRange(min, max) ? (Math.random() * (max - min) + min).toFixed(decimalPlaces) : 'Incorrect range';
+}
+
+getRandomDecimal(1.1, 2.5, 4);
