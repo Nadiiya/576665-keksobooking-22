@@ -5,14 +5,20 @@ const checkCorrectRange = (min, max) => {
 const getRandomInteger = (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
-  return checkCorrectRange(min, max) && min !== max ?  Math.floor(Math.random() * (max - min + 1)) + min : 'Incorrect range';
+  if (checkCorrectRange(min, max) && min !== max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  return -1;
 }
 
 getRandomInteger (0, 7);
 
-
 const getRandomDecimal = (min, max, decimalPlaces = 5) => {
-  return checkCorrectRange(min, max) ? (Math.random() * (max - min) + min).toFixed(decimalPlaces) : 'Incorrect range';
+  if (checkCorrectRange(min, max)) {
+    return  (Math.random() * (max - min) + min).toFixed(decimalPlaces);
+  }
+  return -1;
 }
 
 getRandomDecimal(1.1, 2.5, 4);
+
