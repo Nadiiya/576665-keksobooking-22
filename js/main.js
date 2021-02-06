@@ -11,8 +11,6 @@ const getRandomInteger = (min, max) => {
   return -1;
 }
 
-getRandomInteger (0, 7);
-
 const getRandomDecimal = (min, max, decimalPlaces = 5) => {
   if (checkCorrectRange(min, max)) {
     return  (Math.random() * (max - min) + min).toFixed(decimalPlaces);
@@ -20,5 +18,4 @@ const getRandomDecimal = (min, max, decimalPlaces = 5) => {
   return -1;
 }
 
-getRandomDecimal(1.1, 2.5, 4);
 
