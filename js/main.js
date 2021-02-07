@@ -80,7 +80,7 @@ const getUniqueElementsFrom = (array, length) => {
   if (array.length >= length) {
     return array.sort(() => Math.random() - 0.5).slice(0, length);
   }
-  return -1;
+  return [];
 }
 
 const createAdvert = () => {
