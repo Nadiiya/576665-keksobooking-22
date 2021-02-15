@@ -72,7 +72,7 @@ const createAdvert = () => {
     },
     offer: {
       title: getRandomElementsFrom(TITLE_OPTIONS, 1).toString(),
-      address: [getRandomDecimal(35.65000, 35.70000), getRandomDecimal(139.70000, 139.80000)],
+      address: [getRandomDecimal(35.65000, 35.70000), getRandomDecimal(139.70000, 139.80000)].toString(),
       price: getRandomInteger(1, MAX_PRICE),
       type: getRandomElementsFrom(APARTMENT_TYPES, 1).toString(),
       rooms: getRandomInteger(1, MAX_ROOMS_COUNT),
