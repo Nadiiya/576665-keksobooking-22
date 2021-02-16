@@ -1,16 +1,16 @@
-const createFeaturesListFrom = (array) => {
-  const total = document.createDocumentFragment();
+const createFeatureElement = (array) => {
+  const featureElement = document.createDocumentFragment();
   for (let i = 0; i < array.length; i++) {
     const newElement = document.createElement('li');
     newElement.classList.add('popup__feature');
     newElement.classList.add(`popup__feature--${array[i]}`);
-    total.appendChild(newElement);
+    featureElement .appendChild(newElement);
   }
-  return total;
+  return featureElement;
 }
 
-const createCardGalleryFrom = (array) => {
-  const total = document.createDocumentFragment();
+const createGalleryElement = (array) => {
+  const galleryElement = document.createDocumentFragment();
   for (let i = 0; i < array.length; i++) {
     const newElement = document.createElement('img');
     newElement.src = array[i];
@@ -18,9 +18,9 @@ const createCardGalleryFrom = (array) => {
     newElement.alt = 'Фотография жилья';
     newElement.width = '45';
     newElement.height = '40';
-    total.appendChild(newElement);
+    galleryElement.appendChild(newElement);
   }
-  return total;
+  return galleryElement;
 }
 
 const createTypeNameFrom = (type) => {
@@ -88,7 +88,7 @@ const createCardItem = (offer, author) => {
     cardTime.remove();
   }
   if (offer.features) {
-    cardFeatures.appendChild(createFeaturesListFrom(offer.features));
+    cardFeatures.appendChild(createFeatureElement(offer.features));
   } else {
     cardFeatures.remove();
   }
@@ -98,7 +98,7 @@ const createCardItem = (offer, author) => {
     cardDescription.remove();
   }
   if (offer.photos) {
-    cardPhotos.appendChild(createCardGalleryFrom(offer.photos));
+    cardPhotos.appendChild(createGalleryElement(offer.photos));
   } else {
     cardPhotos.remove();
   }
@@ -110,15 +110,15 @@ const createCardItem = (offer, author) => {
   return cardItem;
 }
 
-const createCardsList = (parent, data) => {
+const createCardsList = (mapCanvas, advertsData) => {
   const fragment = document.createDocumentFragment();
 
-  data.forEach(({offer, author}) => {
+  advertsData.forEach(({offer, author}) => {
     let newCard = createCardItem(offer, author);
     fragment.appendChild(newCard);
   });
 
-  return parent.appendChild(fragment);
+  return mapCanvas.appendChild(fragment);
 }
 
 export {createCardsList};
