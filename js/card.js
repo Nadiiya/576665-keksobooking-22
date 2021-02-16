@@ -23,20 +23,12 @@ const createGalleryElement = (array) => {
   return galleryElement;
 }
 
-const createTypeNameFrom = (type) => {
-  switch (type) {
-    case 'flat':
-      return 'Квартира'
-    case 'bungalow':
-      return 'Бунгало'
-    case 'house':
-      return 'Дом'
-    case 'palace':
-      return 'Дворец'
-    default:
-      return ''
-  }
-}
+const offerTypesToLabels = {
+  flat: 'Квартира',
+  bungalow: 'Бунгало',
+  house: 'Дом',
+  palace: 'Дворец',
+};
 
 const createCardItem = (offer, author) => {
   const templateFragment = document.querySelector('#card').content;
@@ -73,7 +65,7 @@ const createCardItem = (offer, author) => {
     cardPrice.remove();
   }
   if (offer.type) {
-    cardType.textContent = createTypeNameFrom(offer.type);
+    cardType.textContent = offerTypesToLabels[offer.type];
   } else {
     cardType.remove();
   }
