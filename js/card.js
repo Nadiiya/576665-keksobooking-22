@@ -1,27 +1,4 @@
-const createFeatureElement = (array) => {
-  const featureElement = document.createDocumentFragment();
-  for (let i = 0; i < array.length; i++) {
-    const newElement = document.createElement('li');
-    newElement.classList.add('popup__feature');
-    newElement.classList.add(`popup__feature--${array[i]}`);
-    featureElement .appendChild(newElement);
-  }
-  return featureElement;
-}
-
-const createGalleryElement = (array) => {
-  const galleryElement = document.createDocumentFragment();
-  for (let i = 0; i < array.length; i++) {
-    const newElement = document.createElement('img');
-    newElement.src = array[i];
-    newElement.classList.add('popup__photo');
-    newElement.alt = 'Фотография жилья';
-    newElement.width = '45';
-    newElement.height = '40';
-    galleryElement.appendChild(newElement);
-  }
-  return galleryElement;
-}
+import {appendContent} from './util.js';
 
 const offerTypesToLabels = {
   flat: 'Квартира',
@@ -29,6 +6,73 @@ const offerTypesToLabels = {
   house: 'Дом',
   palace: 'Дворец',
 };
+
+const createFeatureElement = (element, content) => {
+  if (content) {
+    const featureElement = document.createDocumentFragment();
+    for (let i = 0; i < content.length; i++) {
+      const featureItem = document.createElement('li');
+      featureItem.classList.add('popup__feature');
+      featureItem.classList.add(`popup__feature--${content[i]}`);
+      featureElement.appendChild(featureItem);
+    }
+    element.innerHTML = '';
+    element.appendChild(featureElement);
+  } else {
+    element.remove();
+  }
+};
+
+const createGalleryElement = (element, content) => {
+  if (content) {
+    const galleryElement = document.createDocumentFragment();
+    for (let i = 0; i < content.length; i++) {
+      const galleryItem = document.createElement('img');
+      galleryItem.src = content[i];
+      galleryItem.classList.add('popup__photo');
+      galleryItem.alt = 'Фотография жилья';
+      galleryItem.width = '45';
+      galleryItem.height = '40';
+      galleryElement.appendChild(galleryItem);
+    }
+    element.innerHTML = '';
+    element.appendChild(galleryElement);
+  } else {
+    element.remove();
+  }
+};
+
+const createCapacityElement = (element, rooms, guests) => {
+  if (rooms && guests) {
+    element.textContent = `${rooms} комнаты для ${guests} гостей`;
+  } else if (rooms && !guests) {
+    element.textContent = `${rooms} комнаты`;
+  } else if (!rooms && guests) {
+    element.textContent = `Для ${guests} гостей`;
+  } else {
+    element.remove();
+  }
+}
+
+const createTimesElement = (element, checkin, checkout) => {
+  if (checkin && checkout) {
+    element.textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
+  } else if (checkin && !checkout) {
+    element.textContent = `Заезд после ${checkin}`;
+  } else if (!checkin && checkout) {
+    element.textContent = `Выезд до ${checkout}`;
+  } else {
+    element.remove();
+  }
+}
+
+const createAvatar = (element, content) => {
+  if (content) {
+    element.src = content;
+  } else {
+    element.remove();
+  }
+}
 
 const createCardItem = (offer, author) => {
   const templateFragment = document.querySelector('#card').content;
@@ -46,59 +90,18 @@ const createCardItem = (offer, author) => {
   const cardPhotos = cardItem.querySelector('.popup__photos');
   const cardAvatar = cardItem.querySelector('.popup__avatar');
 
-  cardFeatures.innerHTML = '';
-  cardPhotos.innerHTML = '';
+  appendContent(cardTitle, offer.title, 'textContent');
+  appendContent(cardAddress, offer.address, 'textContent');
+  appendContent(cardAddress, offer.address, 'textContent');
+  appendContent(cardPrice, `${offer.price} <span>₽/ночь</span>`, 'innerHTML');
+  appendContent(cardType, offerTypesToLabels[offer.type], 'textContent');
+  createCapacityElement(cardCapacity, offer.rooms, offer.guests);
+  createTimesElement(cardTime, offer.checkin, offer.checkout);
+  createFeatureElement(cardFeatures, offer.features);
+  appendContent(cardDescription, offer.description, 'textContent');
+  createGalleryElement(cardPhotos, offer.photos);
+  createAvatar(cardAvatar, author.avatar);
 
-  if (offer.title) {
-    cardTitle.textContent = offer.title;
-  } else {
-    cardTitle.remove();
-  }
-  if (offer.address) {
-    cardAddress.textContent = offer.address;
-  } else {
-    cardAddress.remove();
-  }
-  if (offer.price) {
-    cardPrice.innerHTML = `${offer.price} <span>₽/ночь</span>`;
-  } else {
-    cardPrice.remove();
-  }
-  if (offer.type) {
-    cardType.textContent = offerTypesToLabels[offer.type];
-  } else {
-    cardType.remove();
-  }
-  if (offer.rooms && offer.guests) {
-    cardCapacity.textContent = `${offer.rooms} комнаты для ${offer.guests} гостей`;
-  } else {
-    cardCapacity.remove();
-  }
-  if (offer.checkin && offer.checkout) {
-    cardTime.textContent = `Заезд после ${offer.checkin}, выезд до ${offer.checkout}`;
-  } else {
-    cardTime.remove();
-  }
-  if (offer.features) {
-    cardFeatures.appendChild(createFeatureElement(offer.features));
-  } else {
-    cardFeatures.remove();
-  }
-  if (offer.description) {
-    cardDescription.textContent = offer.description;
-  } else {
-    cardDescription.remove();
-  }
-  if (offer.photos) {
-    cardPhotos.appendChild(createGalleryElement(offer.photos));
-  } else {
-    cardPhotos.remove();
-  }
-  if (author.avatar) {
-    cardAvatar.src = author.avatar;
-  } else {
-    cardAvatar.remove();
-  }
   return cardItem;
 }
 
@@ -109,7 +112,6 @@ const createCardsList = (mapCanvas, advertsData) => {
     let newCard = createCardItem(offer, author);
     fragment.appendChild(newCard);
   });
-
   return mapCanvas.appendChild(fragment);
 }
 

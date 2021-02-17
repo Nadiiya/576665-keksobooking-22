@@ -18,4 +18,23 @@ const getRandomDecimal = (min, max, decimalPlaces = 5) => {
   return -1;
 }
 
+const appendContent = (element, content, appendType) => {
+  if (content) {
+    switch (appendType) {
+      case 'textContent':
+        element.textContent = content;
+        break;
+      case 'innerHTML':
+        element.innerHTML = '';
+        element.innerHTML = content;
+        break;
+      default:
+        throw new Error(`Unexpected appendType: ${appendType}`);
+    }
+  } else {
+    element.remove();
+  }
+};
+
 export {getRandomInteger, getRandomDecimal};
+export {appendContent};
