@@ -105,14 +105,4 @@ const createCardItem = (offer, author) => {
   return cardItem;
 }
 
-const createCardsList = (mapCanvas, advertsData) => {
-  const fragment = document.createDocumentFragment();
-
-  advertsData.forEach(({offer, author}) => {
-    let newCard = createCardItem(offer, author);
-    fragment.appendChild(newCard);
-  });
-  return mapCanvas.appendChild(fragment);
-}
-
-export {createCardsList};
+export {createCardItem};
