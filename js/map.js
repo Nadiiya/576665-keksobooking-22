@@ -1,4 +1,5 @@
 /* global L:readonly */
+const FRACTION_DIGITS = 5;
 import {createSimilarAdverts} from './data.js';
 import {createCardItem} from './card.js'
 
@@ -10,6 +11,16 @@ const defaultLocation = {
   lat: 35.68950,
   lng: 139.69171,
 }
+const mainPinIcon = L.icon({
+  iconUrl: 'img/main-pin.svg',
+  iconSize: [52, 52],
+  iconAnchor: [26, 52],
+});
+const similarAdvertIcon = L.icon({
+  iconUrl: 'img/pin.svg',
+  iconSize: [52, 52],
+  iconAnchor: [26, 52],
+})
 
 const toggleDisable = (element, classname) => {
   const elementChildren = element.children;
@@ -22,74 +33,64 @@ const toggleDisable = (element, classname) => {
 toggleDisable(adFormElement, 'ad-form');
 toggleDisable(mapFiltersElement, 'map__filters');
 
-const map = L.map('map-canvas')
-  .on('load', () => {
-    toggleDisable(adFormElement, 'ad-form');
-    toggleDisable(mapFiltersElement, 'map__filters');
-  })
-  .setView(defaultLocation, 10);
+const mapInit = (location) => {
+  const map = L.map('map-canvas')
+    .on('load', () => {
+      toggleDisable(adFormElement, 'ad-form');
+      toggleDisable(mapFiltersElement, 'map__filters');
+    })
 
-L.tileLayer(
-  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-  {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  },
-).addTo(map);
-
-const createMainPinMarker = () => {
-  const mainPinIcon = L.icon({
-    iconUrl: 'img/main-pin.svg',
-    iconSize: [52, 52],
-    iconAnchor: [26, 52],
-  });
-
-  const mainPinMarker = L.marker(
-    defaultLocation,
+  map.setView(location, 10);
+  L.tileLayer(
+    'https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png',
     {
-      draggable: true,
-      icon: mainPinIcon,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    },
+  ).addTo(map);
+  return map;
+}
+
+const map = mapInit(defaultLocation);
+
+const createMarker = (icon, location, draggable) => {
+  const mainPinMarker = L.marker(
+    location,
+    {
+      draggable: draggable,
+      icon: icon,
     },
   );
   mainPinMarker.addTo(map);
   return mainPinMarker;
 }
 
-const mainPinMarker = createMainPinMarker();
+const mainPinMarker = createMarker(mainPinIcon, defaultLocation, true);
 
 const createSimilarAdvertsMarkers = (adverts) => {
-  const similarAdvertIcon = L.marker({
-    iconUrl: 'img/pin.svg',
-    iconSize: [52, 52],
-    iconAnchor: [26, 52],
-  })
-
   adverts.forEach(element => {
-    const marker = L.marker({
-      lat: element.location.x,
-      lng: element.location.y,
-    },
-    {
-      similarAdvertIcon,
-    });
-    marker
-      .addTo(map)
+    const marker = createMarker(similarAdvertIcon, Object.values(element.location), false);
+
+    marker.addTo(map)
       .bindPopup(
         createCardItem(element.offer, element.author),
       );
-  });
+  })
 }
 
 createSimilarAdvertsMarkers(similarAdverts);
 
-const getMainMarkerLocation = (mainMarker, defaultLocation) => {
-  const location = `${defaultLocation.lat}, ${defaultLocation.lng}`;
+const mainPinMoveHandler = (evt) => {
+  const {lat, lng} = evt.target.getLatLng();
 
-  mainPinMarker.on('moveend', (evt) => {
-    const loc = evt.target.getLatLng();
-    addressInput.value = `${loc.lat.toFixed(5)}, ${loc.lng.toFixed(5)}`;
-  });
-  return location;
+  addressInput.value = `${lat.toFixed(FRACTION_DIGITS)}, ${lng.toFixed(FRACTION_DIGITS)}`;
+};
+
+const setDefaultLocation = (input, defaultLocation) => {
+  const {lat, lng} = defaultLocation;
+
+  input.value = `${lat}, ${lng}`;
 }
 
-addressInput.setAttribute('readonly', '');
-addressInput.value = getMainMarkerLocation(mainPinMarker, defaultLocation);
+addressInput.readOnly = false;
+setDefaultLocation(addressInput, defaultLocation);
+mainPinMarker.on('moveend', mainPinMoveHandler);
