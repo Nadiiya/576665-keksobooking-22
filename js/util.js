@@ -1,3 +1,5 @@
+const ALERT_SHOW_TIME = 10000;
+
 const checkCorrectRange = (min, max) => {
   return !(min < 0 || max < 0 || min > max);
 }
@@ -36,5 +38,30 @@ const appendContent = (element, content, appendType) => {
   }
 };
 
-export {getRandomInteger, getRandomDecimal};
-export {appendContent};
+const showAlert = (message) => {
+  const alertContainer = document.createElement('div');
+  alertContainer.style.zIndex = '100';
+  alertContainer.style.position = 'absolute';
+  alertContainer.style.top = '10px';
+  alertContainer.style.left = '10px';
+  alertContainer.style.padding = '10px 3px';
+  alertContainer.style.fontSize = '20px';
+  alertContainer.style.textAlign = 'center';
+  alertContainer.style.color = '#ff2900';
+  alertContainer.style.backgroundColor = '#ffffff';
+  alertContainer.style.border = '1px solid #ff2900';
+  alertContainer.style.borderRadius = '8px';
+  alertContainer.style.width = '300px';
+  alertContainer.textContent = message;
+  document.body.append(alertContainer);
+
+  setTimeout(() => {
+    alertContainer.remove();
+  }, ALERT_SHOW_TIME);
+}
+
+const isEscEvent = (evt) => {
+  return evt.key === ('Escape' || 'Esc');
+};
+
+export {getRandomInteger, getRandomDecimal, appendContent, showAlert, isEscEvent};
