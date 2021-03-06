@@ -32,6 +32,7 @@ const showAlert = (message) => {
   alertContainer.style.border = '1px solid #ff2900';
   alertContainer.style.borderRadius = '8px';
   alertContainer.style.width = '300px';
+  alertContainer.style.zIndex = '9999';
   alertContainer.textContent = message;
   document.body.append(alertContainer);
 

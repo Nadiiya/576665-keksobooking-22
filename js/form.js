@@ -7,15 +7,13 @@ const advertForm = document.querySelector('.ad-form');
 const advertFormAddress = advertForm.querySelector('#address');
 const resetButton = advertForm.querySelector('.ad-form__reset');
 
-const resetAdvertForm = () => {
+const resetAdvertForm = (evt) => {
+  evt.preventDefault();
   advertForm.reset();
   setDefaultLocation(advertFormAddress, defaultLocation);
 }
 
-resetButton.addEventListener('click', (evt) => {
-  evt.preventDefault();
-  resetAdvertForm();
-});
+resetButton.addEventListener('click',resetAdvertForm);
 
 const createPopup = (templateFragmentID, elementClassName) => {
   const templateFragment = document.querySelector(templateFragmentID).content;
@@ -31,6 +29,7 @@ const closeModal = (modal) => {
   modal.remove();
   document.removeEventListener('keydown', (evt) => {
     if (isEscEvent(evt)) {
+
       evt.preventDefault();
       modal.remove();
     }

@@ -1,13 +1,22 @@
+const checkStatus = (response) => {
+  if (response.ok) {
+    return response;
+  }
+
+  const {statusText, status} = response;
+  throw new Error(`${status} — ${statusText}`);
+}
+
 const getData = (onSuccess, onFail) => {
   fetch('https://22.javascript.pages.academy/keksobooking/data')
+    .then (checkStatus)
     .then((response) => response.json())
     .then((adverts) => {
       onSuccess(adverts);
     })
-    .catch(() => {
-      onFail()
-    })
-  ;
+    .catch((error) => {
+      onFail(error)
+    });
 };
 
 const sendData = (onSuccess, onFail, body) => {
