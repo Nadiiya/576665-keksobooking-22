@@ -1,16 +1,14 @@
 /* global L:readonly */
-const FRACTION_DIGITS = 5;
-import {createSimilarAdverts} from './data.js';
-import {createCardItem} from './card.js'
+import {getData} from './api.js';
+import {createCardItem} from './card.js';
+import {showAlert} from './util.js';
+import {defaultLocation} from './constants.js';
 
+const FRACTION_DIGITS = 5;
 const adFormElement = document.querySelector('.ad-form');
 const mapFiltersElement = document.querySelector('.map__filters');
 const addressInput = adFormElement.querySelector('#address');
-const similarAdverts = createSimilarAdverts();
-const defaultLocation = {
-  lat: 35.68950,
-  lng: 139.69171,
-}
+
 const mainPinIcon = L.icon({
   iconUrl: 'img/main-pin.svg',
   iconSize: [52, 52],
@@ -77,7 +75,10 @@ const createSimilarAdvertsMarkers = (adverts) => {
   })
 }
 
-createSimilarAdvertsMarkers(similarAdverts);
+getData(
+  (adverts) => createSimilarAdvertsMarkers(adverts),
+  (error) => showAlert(`Не удалось получить данные. Ошибка запроса. ${error}`),
+);
 
 const mainPinMoveHandler = (evt) => {
   const {lat, lng} = evt.target.getLatLng();
@@ -87,10 +88,12 @@ const mainPinMoveHandler = (evt) => {
 
 const setDefaultLocation = (input, defaultLocation) => {
   const {lat, lng} = defaultLocation;
-
   input.value = `${lat}, ${lng}`;
+  mainPinMarker.setLatLng(defaultLocation);
 }
 
 addressInput.readOnly = false;
 setDefaultLocation(addressInput, defaultLocation);
 mainPinMarker.on('moveend', mainPinMoveHandler);
+
+export {setDefaultLocation, defaultLocation}
