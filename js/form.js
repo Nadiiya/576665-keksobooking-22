@@ -6,14 +6,24 @@ import {setDefaultLocation} from './map.js';
 const advertForm = document.querySelector('.ad-form');
 const advertFormAddress = advertForm.querySelector('#address');
 const resetButton = advertForm.querySelector('.ad-form__reset');
+const main = document.querySelector('main');
 
-const resetAdvertForm = (evt) => {
-  evt.preventDefault();
+const resetAdvertForm = () => {
   advertForm.reset();
   setDefaultLocation(advertFormAddress, defaultLocation);
 }
 
-resetButton.addEventListener('click',resetAdvertForm);
+resetButton.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  resetAdvertForm();
+});
+
+const popupKeyDownHandler = (evt) => {
+  if (isEscEvent(evt)) {
+    evt.preventDefault();
+    closeModal();
+  }
+};
 
 const createPopup = (templateFragmentID, elementClassName) => {
   const templateFragment = document.querySelector(templateFragmentID).content;
@@ -22,55 +32,47 @@ const createPopup = (templateFragmentID, elementClassName) => {
   return template.cloneNode(true);
 }
 
-const submitErrorMassage = createPopup('#error', '.error');
-const submitSuccessMassage = createPopup('#success', '.success');
+const submitErrorMessage = createPopup('#error', '.error');
+const submitSuccessMessage = createPopup('#success', '.success');
 
-const closeModal = (modal) => {
-  modal.remove();
-  document.removeEventListener('keydown', (evt) => {
-    if (isEscEvent(evt)) {
-
-      evt.preventDefault();
-      modal.remove();
-    }
-  })
-}
-
-const openModal = (modal, buttonCloseSelector) => {
-  modal.style.zIndex = '9999';
-  const main = document.querySelector('main');
-  main.appendChild(modal);
-
-  modal.addEventListener('click', () => {
-    closeModal(modal);
-  })
-
-  if (buttonCloseSelector) {
-    const modalCloseButton = modal.querySelector(buttonCloseSelector);
-    modalCloseButton.addEventListener('click', () => {
-      closeModal(modal);
-    })
+const closeModal = () => {
+  if (main.contains(submitErrorMessage)) {
+    submitErrorMessage.remove();
   }
 
-  document.addEventListener('keydown', (evt) => {
-    if (isEscEvent(evt)) {
-      evt.preventDefault();
-      closeModal(modal);
-    }
-  })
+  if (main.contains(submitSuccessMessage)) {
+    submitSuccessMessage.remove()
+  }
+
+  document.removeEventListener('keydown', popupKeyDownHandler);
 }
 
-const successSendForm = (successMessage) => {
-  openModal(successMessage);
+const openErrorModal = () => {
+  submitErrorMessage.style.zIndex = '9999';
+  const errorButton = submitErrorMessage.querySelector('.error__button');
+  main.appendChild(submitErrorMessage);
+
+  submitErrorMessage.addEventListener('click', closeModal);
+  errorButton.addEventListener('click', closeModal);
+
+  document.addEventListener('keydown', popupKeyDownHandler);
+}
+
+const openSuccessModal = () => {
+  submitSuccessMessage.style.zIndex = '9999';
+  main.appendChild(submitSuccessMessage);
+  submitSuccessMessage.addEventListener('click', closeModal);
   resetAdvertForm();
+
+  document.addEventListener('keydown', popupKeyDownHandler)
 }
 
 const advertFormSubmit = () => {
   advertForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
     sendData(
-      () => successSendForm(submitSuccessMassage),
-      () => openModal(submitErrorMassage, '.error__button'),
+      () => openSuccessModal(),
+      () => openErrorModal(),
       new FormData(evt.target),
     );
   })
