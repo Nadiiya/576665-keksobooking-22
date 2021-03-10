@@ -43,24 +43,24 @@ const setCapacity = () => {
 
     //если значение опшина является первым возможным, добавить атрибут selected
     if (options[i].value === firstViable) {
-      options[i].setAttribute('selected', '');
+      options[i].selected = true;
     }
 
     //если значение не нашлось среди возможных значений для текущего количества комнат, добавить атрибут disabled
     if (!roomsNumberToCapacity[currentRoomsNumber].includes(options[i].value)) {
-      options[i].setAttribute('disabled', '');
+      options[i].disabled = true;
     }
   }
 }
 
 const setTimeOut = (value) => {
   advertFormTimeOut.value = value;
-  advertFormTimeOut.setAttribute('selected', '');
+  advertFormTimeOut.selected = true;
 }
 
 const setTimeIn = (value) => {
   advertFormTimeIn.value = value;
-  advertFormTimeIn.setAttribute('selected', '');
+  advertFormTimeIn.selected = true;
 }
 
 const setValidityMessage = (input) => {
