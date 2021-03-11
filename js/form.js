@@ -2,14 +2,15 @@ import {sendData} from './api.js';
 import {isEscEvent} from './util.js';
 import {defaultLocation} from './constants.js';
 import {setDefaultLocation} from './map.js';
+import {advertForm, validateForm} from './validation.js';
 
-const advertForm = document.querySelector('.ad-form');
 const advertFormAddress = advertForm.querySelector('#address');
 const resetButton = advertForm.querySelector('.ad-form__reset');
 const main = document.querySelector('main');
 
 const resetAdvertForm = () => {
   advertForm.reset();
+  //TODO reset filter
   setDefaultLocation(advertFormAddress, defaultLocation);
 }
 
@@ -66,6 +67,8 @@ const openSuccessModal = () => {
 
   document.addEventListener('keydown', popupKeyDownHandler)
 }
+
+advertForm.addEventListener('input', validateForm);
 
 const advertFormSubmit = () => {
   advertForm.addEventListener('submit', (evt) => {
