@@ -89,6 +89,7 @@ const renderAdvertsMarkers = (adverts) => {
   filterForm.addEventListener('change', (evt => {
     removeMarkers();
     const filteredAdverts = filterAdverts(adverts, evt.target);
+    filteredAdverts.slice(0, 10);
     createSimilarAdvertsMarkers(filteredAdverts);
   }))
 }
