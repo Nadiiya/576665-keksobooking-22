@@ -3,20 +3,21 @@ import {isEscEvent} from './util.js';
 import {defaultLocation} from './constants.js';
 import {setDefaultLocation} from './map.js';
 import {advertForm, validateForm} from './validation.js';
+import {mapFilters} from './filter.js';
 
 const advertFormAddress = advertForm.querySelector('#address');
 const resetButton = advertForm.querySelector('.ad-form__reset');
 const main = document.querySelector('main');
 
-const resetAdvertForm = () => {
+const resetForms = () => {
   advertForm.reset();
-  //TODO reset filter
+  mapFilters.reset();
   setDefaultLocation(advertFormAddress, defaultLocation);
 }
 
 resetButton.addEventListener('click', (evt) => {
   evt.preventDefault();
-  resetAdvertForm();
+  resetForms();
 });
 
 const popupKeyDownHandler = (evt) => {
@@ -63,7 +64,7 @@ const openSuccessModal = () => {
   submitSuccessMessage.style.zIndex = '9999';
   main.appendChild(submitSuccessMessage);
   submitSuccessMessage.addEventListener('click', closeModal);
-  resetAdvertForm();
+  resetForms();
 
   document.addEventListener('keydown', popupKeyDownHandler)
 }

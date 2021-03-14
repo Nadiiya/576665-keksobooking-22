@@ -62,4 +62,4 @@ const filterAdverts = (adverts) => {
   ));
 }
 
-export {filterAdverts}
+export {filterAdverts, mapFilters}
