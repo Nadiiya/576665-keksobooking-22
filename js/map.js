@@ -3,11 +3,13 @@ import {getData} from './api.js';
 import {createCardItem} from './card.js';
 import {showAlert} from './util.js';
 import {defaultLocation} from './constants.js';
+import {filterAdverts} from './filter.js';
 
 const FRACTION_DIGITS = 5;
 const adFormElement = document.querySelector('.ad-form');
 const mapFiltersElement = document.querySelector('.map__filters');
 const addressInput = adFormElement.querySelector('#address');
+const filterForm = document.querySelector('.map__filters');
 
 const mainPinIcon = L.icon({
   iconUrl: 'img/main-pin.svg',
@@ -64,9 +66,16 @@ const createMarker = (icon, location, draggable) => {
 
 const mainPinMarker = createMarker(mainPinIcon, defaultLocation, true);
 
+const advertsMarkers = [];
+
+const removeMarkers = () => {
+  advertsMarkers.forEach((marker) => map.removeLayer(marker));
+}
+
 const createSimilarAdvertsMarkers = (adverts) => {
   adverts.forEach(element => {
     const marker = createMarker(similarAdvertIcon, Object.values(element.location), false);
+    advertsMarkers.push(marker);
 
     marker.addTo(map)
       .bindPopup(
@@ -75,8 +84,17 @@ const createSimilarAdvertsMarkers = (adverts) => {
   })
 }
 
+const renderAdvertsMarkers = (adverts) => {
+  createSimilarAdvertsMarkers(adverts);
+  filterForm.addEventListener('change', (evt => {
+    removeMarkers();
+    const filteredAdverts = filterAdverts(adverts, evt.target);
+    createSimilarAdvertsMarkers(filteredAdverts.slice(0, 10));
+  }))
+}
+
 getData(
-  (adverts) => createSimilarAdvertsMarkers(adverts),
+  (adverts) => renderAdvertsMarkers(adverts),
   (error) => showAlert(`Не удалось получить данные. Ошибка запроса. ${error}`),
 );
 
