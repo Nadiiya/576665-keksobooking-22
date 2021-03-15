@@ -96,12 +96,22 @@ const setValidityMessage = (input) => {
   input.reportValidity();
 }
 
+const toggleInvalidStyle = (element) => {
+  if (element.validity.valid === false) {
+    element.style.border = '4px solid #ff0000';
+  } else {
+    element.style.border = '';
+  }
+}
+
 const validateForm = (evt) => {
   const currentElement = evt.target;
   let currentElementId = currentElement.getAttribute('id');
+
   if (currentElementId === 'type') {
     setMinPrice();
     setValidityMessage(advertFormPrice);
+    toggleInvalidStyle(advertFormPrice);
   }
   if (currentElementId === 'room_number') {
     setCapacity();
@@ -114,6 +124,7 @@ const validateForm = (evt) => {
   }
 
   setValidityMessage(currentElement);
+  toggleInvalidStyle(currentElement);
 }
 
 export {advertForm, validateForm}

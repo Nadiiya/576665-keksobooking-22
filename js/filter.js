@@ -1,38 +1,54 @@
-const mapFilters = document.querySelector('.map__filters');
-const filterType = mapFilters.querySelector('#housing-type');
-const filterPrice = mapFilters.querySelector('#housing-price');
-const filterRoomsNumber = mapFilters.querySelector('#housing-rooms');
-const filterGuestsNumber = mapFilters.querySelector('#housing-guests');
-const filterFeaturesFieldset = mapFilters.querySelector('#housing-features');
+const mapFilter = document.querySelector('.map__filters');
+const filterType = mapFilter.querySelector('#housing-type');
+const filterPrice = mapFilter.querySelector('#housing-price');
+const filterRoomsNumber = mapFilter.querySelector('#housing-rooms');
+const filterGuestsNumber = mapFilter.querySelector('#housing-guests');
+const filterFeaturesFieldset = mapFilter.querySelector('#housing-features');
 
-const MIDDLE_PRICE_RANGE = {
-  'min': 10000,
-  'max': 50000,
+const DEFAULT_SELECT_VALUE = 'any';
+
+const MiddlePriceRange = {
+  MIN: 10000,
+  MAX: 50000,
+}
+
+const activateFilter = () => {
+  mapFilter.classList.remove('map__filters--disabled');
+  for (const item of mapFilter.children) {
+    item.disabled = false;
+  }
+}
+
+const deactivateFilter = () => {
+  mapFilter.classList.add('disabled');
+  for (const item of mapFilter.children) {
+    item.disabled = true;
+  }
 }
 
 const filterByType = (property) => {
-  return (filterType.value === 'any' || property === filterType.value);
+  return (filterType.value === DEFAULT_SELECT_VALUE || property === filterType.value);
 }
 
 const filterByPrice = (property) => {
   switch (filterPrice.value) {
     case 'low':
-      return (property <= MIDDLE_PRICE_RANGE.min);
+      return (property <= MiddlePriceRange.MIN);
     case 'high':
-      return (property >= MIDDLE_PRICE_RANGE.max);
+      return (property >= MiddlePriceRange.MAX);
     case 'middle':
-      return (property > MIDDLE_PRICE_RANGE.min && property < MIDDLE_PRICE_RANGE.max);
+      return (property > MiddlePriceRange.MIN && property < MiddlePriceRange.MIN);
     default:
-      return (filterPrice.value === 'any');
+      return (filterPrice.value === DEFAULT_SELECT_VALUE);
   }
 }
 
 const filterByRooms = (property) => {
-  return (filterRoomsNumber.value === 'any' || property === Number(filterRoomsNumber.value));
+  return (filterRoomsNumber.value === DEFAULT_SELECT_VALUE || property === Number(filterRoomsNumber.value));
 }
 
 const filterByGuests = (property) => {
-  return (filterGuestsNumber.value === 'any' || property === Number(filterGuestsNumber.value));
+  return (filterGuestsNumber.value === DEFAULT_SELECT_VALUE || property === Number(filterGuestsNumber.value));
 }
 
 const getMatchCount = (arrayA, arrayB) => {
@@ -51,15 +67,19 @@ const filterByFeatures = (property) => {
 
 const filterAdverts = (adverts) => {
 
-  return adverts.filter((adverts) => (
+  return adverts.filter((advert) => (
     (
-      (filterByPrice(adverts.offer.price)) &&
-      (filterByType(adverts.offer.type)) &&
-      (filterByRooms(adverts.offer.rooms)) &&
-      (filterByGuests(adverts.offer.guests)) &&
-      (filterByFeatures(adverts.offer.features))
+      (filterByPrice(advert.offer.price)) &&
+      (filterByType(advert.offer.type)) &&
+      (filterByRooms(advert.offer.rooms)) &&
+      (filterByGuests(advert.offer.guests)) &&
+      (filterByFeatures(advert.offer.features))
     )
   ));
 }
 
-export {filterAdverts}
+const setFilteredMarkers = (cb) => {
+  mapFilter.addEventListener('change', (evt) => cb(evt));
+}
+
+export {filterAdverts, activateFilter, deactivateFilter, mapFilter, setFilteredMarkers}

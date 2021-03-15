@@ -1,46 +1,61 @@
 /* global L:readonly */
+/* global _:readonly */
 import {getData} from './api.js';
 import {createCardItem} from './card.js';
 import {showAlert} from './util.js';
-import {defaultLocation} from './constants.js';
-import {filterAdverts} from './filter.js';
+import {activateFilter, deactivateFilter, filterAdverts, setFilteredMarkers} from './filter.js';
 
 const FRACTION_DIGITS = 5;
+const RERENDER_DELAY = 300;
+const MAP_ZOOM = 10;
+const SIMILAR_ADVERTS_COUNT = 10;
 const adFormElement = document.querySelector('.ad-form');
-const mapFiltersElement = document.querySelector('.map__filters');
 const addressInput = adFormElement.querySelector('#address');
-const filterForm = document.querySelector('.map__filters');
+
+const defaultLocation = {
+  lat: 35.68950,
+  lng: 139.69171,
+}
 
 const mainPinIcon = L.icon({
   iconUrl: 'img/main-pin.svg',
   iconSize: [52, 52],
   iconAnchor: [26, 52],
 });
+
 const similarAdvertIcon = L.icon({
   iconUrl: 'img/pin.svg',
   iconSize: [52, 52],
   iconAnchor: [26, 52],
 })
 
-const toggleDisable = (element, classname) => {
-  const elementChildren = element.children;
-  for (let i = 0; i < elementChildren.length; i++) {
-    elementChildren[i].toggleAttribute('disabled');
+const activateForm = () => {
+  adFormElement.classList.remove('ad-form--disabled');
+  for (const item of adFormElement.children) {
+    item.disabled = false;
   }
-  element.classList.toggle(`${classname}--disabled`);
 }
 
-toggleDisable(adFormElement, 'ad-form');
-toggleDisable(mapFiltersElement, 'map__filters');
+const deactivateForm = () => {
+  adFormElement.classList.add('ad-form--disabled');
+  for (const item of adFormElement.children) {
+    item.disabled = true;
+  }
+}
+
+deactivateForm();
+deactivateFilter();
 
 const mapInit = (location) => {
   const map = L.map('map-canvas')
     .on('load', () => {
-      toggleDisable(adFormElement, 'ad-form');
-      toggleDisable(mapFiltersElement, 'map__filters');
+      getData(
+        (adverts) => initPage(adverts),
+        (error) => showAlert(`Не удалось получить данные. Ошибка запроса. ${error}`),
+      );
     })
 
-  map.setView(location, 10);
+  map.setView(location, MAP_ZOOM);
   L.tileLayer(
     'https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png',
     {
@@ -86,17 +101,19 @@ const createSimilarAdvertsMarkers = (adverts) => {
 
 const renderAdvertsMarkers = (adverts) => {
   createSimilarAdvertsMarkers(adverts);
-  filterForm.addEventListener('change', (evt => {
+  setFilteredMarkers(_.debounce((evt) => {
     removeMarkers();
     const filteredAdverts = filterAdverts(adverts, evt.target);
-    createSimilarAdvertsMarkers(filteredAdverts.slice(0, 10));
-  }))
+    createSimilarAdvertsMarkers(filteredAdverts.slice(0, SIMILAR_ADVERTS_COUNT));
+  }, RERENDER_DELAY));
+
 }
 
-getData(
-  (adverts) => renderAdvertsMarkers(adverts),
-  (error) => showAlert(`Не удалось получить данные. Ошибка запроса. ${error}`),
-);
+const initPage = (adverts) => {
+  renderAdvertsMarkers(adverts);
+  activateFilter();
+  activateForm();
+}
 
 const mainPinMoveHandler = (evt) => {
   const {lat, lng} = evt.target.getLatLng();
@@ -106,6 +123,7 @@ const mainPinMoveHandler = (evt) => {
 
 const setDefaultLocation = (input, defaultLocation) => {
   const {lat, lng} = defaultLocation;
+
   input.value = `${lat}, ${lng}`;
   mainPinMarker.setLatLng(defaultLocation);
 }

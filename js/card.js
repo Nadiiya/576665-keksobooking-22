@@ -31,8 +31,8 @@ const createGalleryElement = (element, content) => {
       galleryItem.src = content[i];
       galleryItem.classList.add('popup__photo');
       galleryItem.alt = 'Фотография жилья';
-      galleryItem.width = '45';
-      galleryItem.height = '40';
+      galleryItem.width = 45;
+      galleryItem.height = 40;
       galleryElement.appendChild(galleryItem);
     }
     element.innerHTML = '';
