@@ -1,14 +1,15 @@
 /* global L:readonly */
+/* global _:readonly */
 import {getData} from './api.js';
 import {createCardItem} from './card.js';
 import {showAlert} from './util.js';
 import {defaultLocation} from './constants.js';
-import {activateFilter, deactivateFilter, filterAdverts} from './filter.js';
+import {activateFilter, deactivateFilter, filterAdverts, setFilteredMarkers} from './filter.js';
 
 const FRACTION_DIGITS = 5;
+const RERENDER_DELAY = 300;
 const adFormElement = document.querySelector('.ad-form');
 const addressInput = adFormElement.querySelector('#address');
-const filterForm = document.querySelector('.map__filters');
 
 const mainPinIcon = L.icon({
   iconUrl: 'img/main-pin.svg',
@@ -93,11 +94,12 @@ const createSimilarAdvertsMarkers = (adverts) => {
 
 const renderAdvertsMarkers = (adverts) => {
   createSimilarAdvertsMarkers(adverts);
-  filterForm.addEventListener('change', (evt => {
+  setFilteredMarkers(_.debounce((evt) => {
     removeMarkers();
     const filteredAdverts = filterAdverts(adverts, evt.target);
     createSimilarAdvertsMarkers(filteredAdverts.slice(0, 10));
-  }))
+  }, RERENDER_DELAY));
+
 }
 
 const initPage = (adverts) => {

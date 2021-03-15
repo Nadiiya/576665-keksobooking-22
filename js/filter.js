@@ -76,4 +76,8 @@ const filterAdverts = (adverts) => {
   ));
 }
 
-export {filterAdverts, activateFilter, deactivateFilter, mapFilters}
+const setFilteredMarkers = (cb) => {
+  mapFilters.addEventListener('change', (evt) => cb(evt));
+}
+
+export {filterAdverts, activateFilter, deactivateFilter, mapFilters, setFilteredMarkers}
