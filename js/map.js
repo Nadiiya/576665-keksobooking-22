@@ -31,14 +31,14 @@ const similarAdvertIcon = L.icon({
 
 const activateForm = () => {
   adFormElement.classList.remove('ad-form--disabled');
-  for (let item of adFormElement.children) {
+  for (const item of adFormElement.children) {
     item.disabled = false;
   }
 }
 
 const deactivateForm = () => {
   adFormElement.classList.add('ad-form--disabled');
-  for (let item of adFormElement.children) {
+  for (const item of adFormElement.children) {
     item.disabled = true;
   }
 }

@@ -14,14 +14,14 @@ const MiddlePriceRange = {
 
 const activateFilter = () => {
   mapFilter.classList.remove('map__filters--disabled');
-  for (let item of mapFilter.children) {
+  for (const item of mapFilter.children) {
     item.disabled = false;
   }
 }
 
 const deactivateFilter = () => {
   mapFilter.classList.add('disabled');
-  for (let item of mapFilter.children) {
+  for (const item of mapFilter.children) {
     item.disabled = true;
   }
 }
