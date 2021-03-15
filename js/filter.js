@@ -10,6 +10,20 @@ const MIDDLE_PRICE_RANGE = {
   'max': 50000,
 }
 
+const activateFilter = () => {
+  mapFilters.classList.remove('map__filters--disabled');
+  for (let item of mapFilters.children) {
+    item.disabled = false;
+  }
+}
+
+const deactivateFilter = () => {
+  mapFilters.classList.add('disabled');
+  for (let item of mapFilters.children) {
+    item.disabled = true;
+  }
+}
+
 const filterByType = (property) => {
   return (filterType.value === 'any' || property === filterType.value);
 }
@@ -62,4 +76,4 @@ const filterAdverts = (adverts) => {
   ));
 }
 
-export {filterAdverts, mapFilters}
+export {filterAdverts, activateFilter, deactivateFilter, mapFilters}

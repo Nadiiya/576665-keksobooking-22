@@ -3,11 +3,10 @@ import {getData} from './api.js';
 import {createCardItem} from './card.js';
 import {showAlert} from './util.js';
 import {defaultLocation} from './constants.js';
-import {filterAdverts} from './filter.js';
+import {activateFilter, deactivateFilter, filterAdverts} from './filter.js';
 
 const FRACTION_DIGITS = 5;
 const adFormElement = document.querySelector('.ad-form');
-const mapFiltersElement = document.querySelector('.map__filters');
 const addressInput = adFormElement.querySelector('#address');
 const filterForm = document.querySelector('.map__filters');
 
@@ -22,22 +21,30 @@ const similarAdvertIcon = L.icon({
   iconAnchor: [26, 52],
 })
 
-const toggleDisable = (element, classname) => {
-  const elementChildren = element.children;
-  for (let i = 0; i < elementChildren.length; i++) {
-    elementChildren[i].toggleAttribute('disabled');
+const activateForm = () => {
+  adFormElement.classList.remove('ad-form--disabled');
+  for (let item of adFormElement.children) {
+    item.disabled = false;
   }
-  element.classList.toggle(`${classname}--disabled`);
 }
 
-toggleDisable(adFormElement, 'ad-form');
-toggleDisable(mapFiltersElement, 'map__filters');
+const deactivateForm = () => {
+  adFormElement.classList.add('ad-form--disabled');
+  for (let item of adFormElement.children) {
+    item.disabled = true;
+  }
+}
+
+deactivateForm();
+deactivateFilter();
 
 const mapInit = (location) => {
   const map = L.map('map-canvas')
     .on('load', () => {
-      toggleDisable(adFormElement, 'ad-form');
-      toggleDisable(mapFiltersElement, 'map__filters');
+      getData(
+        (adverts) => initPage(adverts),
+        (error) => showAlert(`Не удалось получить данные. Ошибка запроса. ${error}`),
+      );
     })
 
   map.setView(location, 10);
@@ -93,10 +100,11 @@ const renderAdvertsMarkers = (adverts) => {
   }))
 }
 
-getData(
-  (adverts) => renderAdvertsMarkers(adverts),
-  (error) => showAlert(`Не удалось получить данные. Ошибка запроса. ${error}`),
-);
+const initPage = (adverts) => {
+  renderAdvertsMarkers(adverts);
+  activateFilter();
+  activateForm();
+}
 
 const mainPinMoveHandler = (evt) => {
   const {lat, lng} = evt.target.getLatLng();
@@ -106,6 +114,7 @@ const mainPinMoveHandler = (evt) => {
 
 const setDefaultLocation = (input, defaultLocation) => {
   const {lat, lng} = defaultLocation;
+
   input.value = `${lat}, ${lng}`;
   mainPinMarker.setLatLng(defaultLocation);
 }
