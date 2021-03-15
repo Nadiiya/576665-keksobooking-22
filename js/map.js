@@ -3,19 +3,26 @@
 import {getData} from './api.js';
 import {createCardItem} from './card.js';
 import {showAlert} from './util.js';
-import {defaultLocation} from './constants.js';
 import {activateFilter, deactivateFilter, filterAdverts, setFilteredMarkers} from './filter.js';
 
 const FRACTION_DIGITS = 5;
 const RERENDER_DELAY = 300;
+const MAP_ZOOM = 10;
+const SIMILAR_ADVERTS_COUNT = 10;
 const adFormElement = document.querySelector('.ad-form');
 const addressInput = adFormElement.querySelector('#address');
+
+const defaultLocation = {
+  lat: 35.68950,
+  lng: 139.69171,
+}
 
 const mainPinIcon = L.icon({
   iconUrl: 'img/main-pin.svg',
   iconSize: [52, 52],
   iconAnchor: [26, 52],
 });
+
 const similarAdvertIcon = L.icon({
   iconUrl: 'img/pin.svg',
   iconSize: [52, 52],
@@ -48,7 +55,7 @@ const mapInit = (location) => {
       );
     })
 
-  map.setView(location, 10);
+  map.setView(location, MAP_ZOOM);
   L.tileLayer(
     'https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png',
     {
@@ -97,7 +104,7 @@ const renderAdvertsMarkers = (adverts) => {
   setFilteredMarkers(_.debounce((evt) => {
     removeMarkers();
     const filteredAdverts = filterAdverts(adverts, evt.target);
-    createSimilarAdvertsMarkers(filteredAdverts.slice(0, 10));
+    createSimilarAdvertsMarkers(filteredAdverts.slice(0, SIMILAR_ADVERTS_COUNT));
   }, RERENDER_DELAY));
 
 }

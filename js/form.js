@@ -1,9 +1,8 @@
 import {sendData} from './api.js';
 import {isEscEvent} from './util.js';
-import {defaultLocation} from './constants.js';
-import {setDefaultLocation} from './map.js';
+import {setDefaultLocation, defaultLocation} from './map.js';
 import {advertForm, validateForm} from './validation.js';
-import {mapFilters} from './filter.js';
+import {mapFilter} from './filter.js';
 
 const advertFormAddress = advertForm.querySelector('#address');
 const resetButton = advertForm.querySelector('.ad-form__reset');
@@ -11,7 +10,7 @@ const main = document.querySelector('main');
 
 const resetForms = () => {
   advertForm.reset();
-  mapFilters.reset();
+  mapFilter.reset();
   setDefaultLocation(advertFormAddress, defaultLocation);
 }
 
