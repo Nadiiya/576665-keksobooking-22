@@ -67,13 +67,13 @@ const filterByFeatures = (property) => {
 
 const filterAdverts = (adverts) => {
 
-  return adverts.filter((adverts) => (
+  return adverts.filter((advert) => (
     (
-      (filterByPrice(adverts.offer.price)) &&
-      (filterByType(adverts.offer.type)) &&
-      (filterByRooms(adverts.offer.rooms)) &&
-      (filterByGuests(adverts.offer.guests)) &&
-      (filterByFeatures(adverts.offer.features))
+      (filterByPrice(advert.offer.price)) &&
+      (filterByType(advert.offer.type)) &&
+      (filterByRooms(advert.offer.rooms)) &&
+      (filterByGuests(advert.offer.guests)) &&
+      (filterByFeatures(advert.offer.features))
     )
   ));
 }
