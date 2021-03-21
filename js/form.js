@@ -3,6 +3,7 @@ import {isEscEvent} from './util.js';
 import {setDefaultLocation, defaultLocation} from './map.js';
 import {advertForm, validateForm} from './validation.js';
 import {mapFilter} from './filter.js';
+import {setDefaultHousePreview, setDefaultAvatarPreview} from './picture.js';
 
 const advertFormAddress = advertForm.querySelector('#address');
 const resetButton = advertForm.querySelector('.ad-form__reset');
@@ -12,6 +13,8 @@ const resetForms = () => {
   advertForm.reset();
   mapFilter.reset();
   setDefaultLocation(advertFormAddress, defaultLocation);
+  setDefaultHousePreview();
+  setDefaultAvatarPreview();
 }
 
 resetButton.addEventListener('click', (evt) => {
