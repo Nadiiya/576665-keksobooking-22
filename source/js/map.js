@@ -1,5 +1,6 @@
-/* global L:readonly */
 /* global _:readonly */
+import L from 'leaflet';
+import '../../node_modules/leaflet/dist/leaflet.css';
 import {getData} from './api.js';
 import {createCardItem} from './card.js';
 import {showAlert} from './util.js';
